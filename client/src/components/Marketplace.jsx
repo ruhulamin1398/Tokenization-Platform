@@ -1,8 +1,28 @@
 import { useState } from 'react';
 import { useAllTokens } from '../blockchain/hooks/useAllTokens';
-import { blockchainConfig } from '../blockchain/config';
-import { ConnectButton } from '@rainbow-me/rainbowkit';
 import PurchaseModal from './PurchaseModal';
+import HeroSection from './marketplace/HeroSection';
+import FeaturedTokensSection from './marketplace/FeaturedTokensSection';
+import NewTokensSection from './marketplace/NewTokensSection';
+import PopularTokensSection from './marketplace/PopularTokensSection';
+
+// Custom styles for slick arrows
+const customStyles = `
+  .slick-prev:before,
+  .slick-next:before {
+    color: #9ca3af !important;
+  }
+  .slick-prev:hover:before,
+  .slick-next:hover:before {
+    color: #a855f7 !important;
+  }
+  .slick-dots li button:before {
+    color: #6b7280 !important;
+  }
+  .slick-dots li.slick-active button:before {
+    color: #a855f7 !important;
+  }
+`;
 
 const Marketplace = () => {
   const { tokens, isLoading, error } = useAllTokens();
@@ -10,79 +30,52 @@ const Marketplace = () => {
 
   if (isLoading) {
     return (
-      <div className="flex justify-center items-center py-12">
-        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-gray-900"></div>
-        <span className="ml-3 text-gray-600">Loading marketplace...</span>
+      <div className="flex flex-col justify-center items-center py-20">
+        <div className="relative">
+          <div className="animate-spin rounded-full h-16 w-16 border-4 border-purple-500 border-t-transparent"></div>
+          <div className="absolute inset-0 rounded-full bg-gradient-to-r from-purple-500/20 to-pink-500/20 opacity-20 animate-pulse"></div>
+        </div>
+        <span className="mt-6 text-xl text-gray-300 font-medium">Loading marketplace...</span>
+        <div className="mt-2 text-sm text-gray-500">Discovering amazing tokenized assets</div>
       </div>
     );
   }
 
   if (error) {
     return (
-      <div className="max-w-2xl mx-auto p-6 bg-red-50 border border-red-200 rounded-lg">
-        <p className="text-red-600">Error loading marketplace: {error.message}</p>
+      <div className="max-w-2xl mx-auto p-8 bg-red-900/20 border border-red-500/30 rounded-2xl backdrop-blur-sm">
+        <div className="text-center">
+          <div className="w-16 h-16 bg-red-500/20 rounded-full flex items-center justify-center mx-auto mb-4">
+            <svg className="w-8 h-8 text-red-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-2.5L13.732 4c-.77-.833-1.964-.833-2.732 0L3.732 16.5c-.77.833.192 2.5 1.732 2.5z" />
+            </svg>
+          </div>
+          <p className="text-red-400 font-semibold text-lg mb-2">Error loading marketplace</p>
+          <p className="text-gray-400">{error.message}</p>
+        </div>
       </div>
     );
   }
 
   return (
-    <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-      <div className="mb-8">
-        <h1 className="text-4xl font-bold text-gray-900 mb-2">Token Marketplace</h1>
-        <p className="text-xl text-gray-600">Discover and purchase tokenized assets</p>
-      </div>
+    <>
+      <style dangerouslySetInnerHTML={{ __html: customStyles }} />
+      <div className="space-y-12">
+        {/* <HeroSection tokens={tokens} /> */}
+        
+        <FeaturedTokensSection tokens={tokens} onTokenSelect={setSelectedToken} />
+       
+        <NewTokensSection tokens={tokens} onTokenSelect={setSelectedToken} />
+        <PopularTokensSection tokens={tokens} onTokenSelect={setSelectedToken} />
 
-        {(!tokens || tokens.length === 0) ? (
-          <div className="text-center py-12">
-            <p className="text-gray-500">No tokens available yet.</p>
-          </div>
-        ) : (
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
-            {tokens.map((token, index) => (
-              <div key={index} className="bg-white rounded-lg shadow-md overflow-hidden hover:shadow-lg transition-shadow duration-200">
-                <div className="p-6">
-                  <div className="flex items-start justify-between mb-4">
-                    <div>
-                      <h3 className="text-lg font-semibold text-gray-900">{token.name}</h3>
-                      <p className="text-sm text-gray-500">{token.symbol}</p>
-                    </div>
-                    <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-green-100 text-green-800">
-                      Available
-                    </span>
-                  </div>
-
-                  <p className="text-gray-600 text-sm mb-4 line-clamp-3">{token.description}</p>
-
-                  <div className="space-y-2 mb-4">
-                    <div className="flex justify-between text-sm">
-                      <span className="text-gray-500">Price:</span>
-                      <span className="font-semibold">{Number(token.price) / 10**blockchainConfig.USDT_DECIMALS} USDT</span>
-                    </div>
-                    <div className="flex justify-between text-sm">
-                      <span className="text-gray-500">Available:</span>
-                      <span className="font-semibold">{Number(token.maxSupply) - Number(token.totalSupply)}</span>
-                    </div>
-                  </div>
-
-                  <button
-                    onClick={() => setSelectedToken(token)}
-                    className="w-full bg-gray-900 text-white py-2 px-4 rounded-lg font-medium hover:bg-gray-800 transition duration-200"
-                  >
-                    Purchase
-                  </button>
-                </div>
-              </div>
-            ))}
-          </div>
+        {selectedToken && (
+          <PurchaseModal
+            token={selectedToken}
+            onClose={() => setSelectedToken(null)}
+          />
         )}
-
-      {selectedToken && (
-        <PurchaseModal
-          token={selectedToken}
-          onClose={() => setSelectedToken(null)}
-        />
-      )}
-    </div>
+      </div>
+    </>
   );
 };
 

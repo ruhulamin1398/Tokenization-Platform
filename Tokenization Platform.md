@@ -85,11 +85,11 @@ The token creation process follows these steps:
 
 ---
 
-## 3. Owner Dashboard
+## 3. Issuer Dashboard
 
 ### Features & Functionality
 
-The owner dashboard provides comprehensive token management capabilities.
+The issuer dashboard provides comprehensive token management capabilities.
 
 **Display Information:**
 

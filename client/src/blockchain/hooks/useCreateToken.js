@@ -13,7 +13,7 @@ export const useCreateToken = () => {
       address: blockchainConfig.FACTORY_CONTRACT_ADDRESS,
       abi: blockchainConfig.TOKEN_FACTORY_ABI,
       functionName: 'createToken',
-      args: [name, symbol, description, maxSupply, price],
+      args: [name, symbol, description, maxSupply, price*10**6],
     });
     
   };

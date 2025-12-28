@@ -14,38 +14,93 @@ const PurchaseModal = ({ token, onClose }) => {
   const totalPrice = (amount * Number(token.price)) / 10**blockchainConfig.USDT_DECIMALS;
 
   return (
-    <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
-      <div className="bg-white p-6 rounded-xl shadow-lg max-w-md w-full mx-4">
-        <h3 className="text-xl font-bold mb-4">Purchase {token.name}</h3>
-        <div className="mb-4">
-          <label className="block text-sm font-medium text-gray-700 mb-2">Amount</label>
-          <input
-            type="number"
-            value={amount}
-            onChange={(e) => setAmount(parseInt(e.target.value) || 1)}
-            min="1"
-            max={Number(token.maxSupply) - Number(token.totalSupply)}
-            className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500"
-          />
-        </div>
-        <div className="mb-4">
-          <p className="text-sm text-gray-600">Price per token: {Number(token.price) / 10**blockchainConfig.USDT_DECIMALS} USDT</p>
-          <p className="text-lg font-semibold">Total: {totalPrice} USDT</p>
-        </div>
-        <div className="flex space-x-3">
-          <button
-            onClick={onClose}
-            className="flex-1 bg-gray-200 text-gray-800 py-2 px-4 rounded-lg hover:bg-gray-300"
-          >
-            Cancel
-          </button>
-          <button
-            onClick={handlePurchase}
-            disabled={isPending}
-            className="flex-1 bg-blue-600 text-white py-2 px-4 rounded-lg hover:bg-blue-700 disabled:bg-gray-400"
-          >
-            {isPending ? 'Purchasing...' : 'Purchase'}
-          </button>
+    <div className="fixed inset-0 bg-black/60 backdrop-blur-sm flex items-center justify-center z-50 p-4">
+      <div className="bg-gray-900/90 backdrop-blur-xl border border-gray-700/50 rounded-2xl shadow-2xl max-w-md w-full p-8 relative overflow-hidden">
+        {/* Gradient background effect */}
+        <div className="absolute inset-0 bg-gradient-to-br from-purple-500/10 to-pink-500/10 pointer-events-none"></div>
+
+        <div className="relative">
+          {/* Header */}
+          <div className="text-center mb-6">
+            <div className="w-16 h-16 bg-gradient-to-r from-purple-500 to-pink-500 rounded-full flex items-center justify-center mx-auto mb-4">
+              <svg className="w-8 h-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z" />
+              </svg>
+            </div>
+            <h3 className="text-2xl font-bold text-white mb-2">Purchase Token</h3>
+            <p className="text-gray-400">Complete your purchase for <span className="text-purple-400 font-semibold">{token.name}</span></p>
+          </div>
+
+          {/* Amount Input */}
+          <div className="mb-6">
+            <label className="block text-sm font-medium text-gray-300 mb-3">Amount to Purchase</label>
+            <div className="relative">
+              <input
+                type="number"
+                value={amount}
+                onChange={(e) => setAmount(parseInt(e.target.value) || 1)}
+                min="1"
+                max={Number(token.maxSupply) - Number(token.totalSupply)}
+                className="w-full px-4 py-3 bg-gray-800/50 border border-gray-600/50 rounded-xl text-white placeholder-gray-500 focus:ring-2 focus:ring-purple-500 focus:border-transparent transition-all duration-200 text-center text-lg font-semibold"
+              />
+              <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
+                <span className="text-gray-500 text-sm">Qty:</span>
+              </div>
+            </div>
+            <p className="text-xs text-gray-500 mt-2 text-center">
+              Available: {Number(token.maxSupply) - Number(token.totalSupply)} tokens
+            </p>
+          </div>
+
+          {/* Price Breakdown */}
+          <div className="bg-gray-800/30 rounded-xl p-4 mb-6 border border-gray-700/30">
+            <div className="flex justify-between items-center mb-2">
+              <span className="text-gray-400 text-sm">Price per token</span>
+              <span className="text-white font-medium">
+                {Number(token.price) / 10**blockchainConfig.USDT_DECIMALS} USDT
+              </span>
+            </div>
+            <div className="flex justify-between items-center mb-3">
+              <span className="text-gray-400 text-sm">Quantity</span>
+              <span className="text-white font-medium">{amount}</span>
+            </div>
+            <hr className="border-gray-700/50 mb-3" />
+            <div className="flex justify-between items-center">
+              <span className="text-white font-semibold">Total</span>
+              <span className="text-2xl font-bold bg-gradient-to-r from-green-400 to-emerald-400 bg-clip-text text-transparent">
+                {totalPrice.toFixed(2)} USDT
+              </span>
+            </div>
+          </div>
+
+          {/* Action Buttons */}
+          <div className="flex space-x-3">
+            <button
+              onClick={onClose}
+              className="flex-1 bg-gray-700/50 hover:bg-gray-600/50 text-gray-300 py-3 px-4 rounded-xl font-medium transition-all duration-200 border border-gray-600/50 hover:border-gray-500/50"
+            >
+              Cancel
+            </button>
+            <button
+              onClick={handlePurchase}
+              disabled={isPending}
+              className="flex-1 bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-500 hover:to-pink-500 disabled:from-gray-600 disabled:to-gray-600 text-white py-3 px-4 rounded-xl font-semibold transition-all duration-200 transform hover:scale-105 disabled:hover:scale-100 disabled:cursor-not-allowed shadow-lg hover:shadow-purple-500/25"
+            >
+              {isPending ? (
+                <div className="flex items-center justify-center space-x-2">
+                  <div className="animate-spin rounded-full h-4 w-4 border-2 border-white border-t-transparent"></div>
+                  <span>Purchasing...</span>
+                </div>
+              ) : (
+                <div className="flex items-center justify-center space-x-2">
+                  <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+                  </svg>
+                  <span>Complete Purchase</span>
+                </div>
+              )}
+            </button>
+          </div>
         </div>
       </div>
     </div>
