@@ -31,14 +31,14 @@ const CreateTokenForm = () => {
   };
 
   return (
-    <div className="max-w-2xl mx-auto bg-white p-8 rounded-xl shadow-lg border border-gray-200">
+    <div className="max-w-3xl mx-auto bg-white p-8 rounded-xl shadow-lg border border-gray-200">
       <div className="mb-8">
         <h2 className="text-3xl font-bold text-gray-900 mb-2">Create New Token</h2>
         <p className="text-gray-600">Fill in the details to tokenize your asset on the blockchain.</p>
       </div>
 
       <form onSubmit={handleSubmit} className="space-y-6">
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+        <div className="grid grid-cols-2 gap-6">
           <div>
             <label className="block text-sm font-medium text-gray-700 mb-2">Token Name</label>
             <input
@@ -78,7 +78,7 @@ const CreateTokenForm = () => {
           />
         </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+        <div className="grid grid-cols-2 gap-6">
           <div>
             <label className="block text-sm font-medium text-gray-700 mb-2">Max Supply</label>
             <input
