@@ -1,0 +1,39 @@
+import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
+import { ConnectButton } from '@rainbow-me/rainbowkit';
+import DashboardLayout from './components/DashboardLayout';
+import IssuerDashboard from './pages/IssuerDashboard';
+import './App.css';
+
+function Home() {
+  return (
+    <>
+      <nav className="bg-blue-600 p-4">
+        <div className="container mx-auto flex justify-between items-center">
+          <h1 className="text-white text-xl font-bold">Tokenization Platform</h1>
+          <ConnectButton />
+        </div>
+      </nav>
+      <div className="p-4">
+        <h1 className="text-3xl font-bold underline">
+          Hello world!
+        </h1>
+        <a href="/issuer" className="text-blue-500 underline">Go to Issuer Dashboard</a>
+      </div>
+    </>
+  );
+}
+
+function App() {
+  return (
+    <Router>
+      <Routes>
+        <Route path="/" element={<Home />} />
+        <Route path="/issuer" element={<DashboardLayout />}>
+          <Route index element={<IssuerDashboard />} />
+        </Route>
+      </Routes>
+    </Router>
+  );
+}
+
+export default App;
