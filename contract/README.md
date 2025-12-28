@@ -104,7 +104,7 @@ forge script script/DeployFactoryContract.s.sol:DeployAurexToken --rpc-url $RPC_
 ### Sepolia Testnet
 
 - **TokenFactory**: [0x6ab92902b3e40ac3d0149df6dfa1aa15bec1955f](https://sepolia.etherscan.io/address/0x6ab92902b3e40ac3d0149df6dfa1aa15bec1955f)
-- **Sample Token**: [0x61807fBd22D2E47227C1af6d5aC5F3ECC0d05930](https://sepolia.etherscan.io/address/0x61807fBd22D2E47227C1af6d5aC5F3ECC0d05930)
+- **USDT Token**: [0x61807fBd22D2E47227C1af6d5aC5F3ECC0d05930](https://sepolia.etherscan.io/address/0x61807fBd22D2E47227C1af6d5aC5F3ECC0d05930)
 
 ## Usage
 

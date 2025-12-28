@@ -1,6 +1,6 @@
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import { ConnectButton } from '@rainbow-me/rainbowkit';
-import DashboardLayout from './components/DashboardLayout';
+import IssuerLayout from './layouts/issuer/index.jsx';
 import IssuerDashboard from './pages/IssuerDashboard';
 import './App.css';
 
@@ -28,7 +28,7 @@ function App() {
     <Router>
       <Routes>
         <Route path="/" element={<Home />} />
-        <Route path="/issuer" element={<DashboardLayout />}>
+        <Route path="/issuer" element={<IssuerLayout />}>
           <Route index element={<IssuerDashboard />} />
         </Route>
       </Routes>
