@@ -20,7 +20,7 @@ const IssuerLayout = () => {
              
             <h1 className="text-2xl font-semibold text-gray-800">Dashboard</h1>
           </div>
-          <ConnectButton />
+          <ConnectButton showBalance={false} />
         </header>
 
         {/* Content Area */}

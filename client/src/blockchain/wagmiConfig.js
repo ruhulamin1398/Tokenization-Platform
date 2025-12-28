@@ -1,7 +1,7 @@
 import { createConfig } from 'wagmi';
 import { bsc, bscTestnet } from 'wagmi/chains';
 import { http } from 'wagmi';
-import { config } from './config';
+import { blockchainConfig } from './config';
 import { connectorsForWallets } from '@rainbow-me/rainbowkit';
 import {
     metaMaskWallet,
@@ -60,8 +60,8 @@ const connectors = connectorsForWallets(
 
 export const wagmiConfig = createConfig({
     connectors,
-    chains: [config.CHAIN],
+    chains: [blockchainConfig.CHAIN],
     transports: {
-        [config.CHAIN_ID]: http(config.RPC_URL),
+        [blockchainConfig.CHAIN_ID]: http(blockchainConfig.RPC_URL),
     },
 });
