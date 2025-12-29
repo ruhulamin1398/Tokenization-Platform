@@ -1,36 +1,9 @@
 import React, { useState } from 'react';
-import { useWriteContract, useAccount } from 'wagmi'; 
-import { toast } from 'react-toastify';
 import { ConnectButton } from '@rainbow-me/rainbowkit';
-import { blockchainConfig } from '../blockchain/config';
+import { useFaucet } from '../blockchain/hooks/useFaucet';
 
 const FaucetPage = () => {
-  const [amount, setAmount] = useState('');
-  const { address } = useAccount();
-  const { writeContract, isPending, isSuccess, error } = useWriteContract();
-
-  const handleMint = () => {
-    if (!amount || !address) return;
-
-    const amountInUnits = parseFloat(amount) * 10 ** 6; // USDT has 6 decimals
-
-    writeContract({
-      address: blockchainConfig.USDT_CONTRACT_ADDRESS,
-      abi: blockchainConfig.USDT_ABI,
-      functionName: 'mint',
-      args: [address, amountInUnits],
-    });
-  };
-
-  React.useEffect(() => {
-    if (isSuccess) {
-      toast.success('USDT minted successfully!');
-      setAmount('');
-    }
-    if (error) {
-      toast.error(`Mint failed: ${error.message}`);
-    }
-  }, [isSuccess, error]);
+  const { amount, setAmount, handleMint, isPending, isConnected } = useFaucet();
 
   return (
     <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-gray-900 via-gray-800 to-black p-4">
@@ -54,7 +27,7 @@ const FaucetPage = () => {
             />
           </div>
 
-          {!address ? (
+          {!isConnected ? (
             <ConnectButton.Custom>
               {({ openConnectModal }) => (
                 <button

@@ -5,6 +5,7 @@ import HeroSection from './marketplace/HeroSection';
 import FeaturedTokensSection from './marketplace/FeaturedTokensSection';
 import NewTokensSection from './marketplace/NewTokensSection';
 import PopularTokensSection from './marketplace/PopularTokensSection';
+import SkeletonCard from './SkeletonCard';
 
 // Custom styles for slick arrows
 const customStyles = `
@@ -30,13 +31,59 @@ const Marketplace = () => {
 
   if (isLoading) {
     return (
-      <div className="flex flex-col justify-center items-center py-20">
-        <div className="relative">
-          <div className="animate-spin rounded-full h-16 w-16 border-4 border-purple-500 border-t-transparent"></div>
-          <div className="absolute inset-0 rounded-full bg-gradient-to-r from-purple-500/20 to-pink-500/20 opacity-20 animate-pulse"></div>
+      <div className="space-y-12">
+        {/* Hero skeleton */}
+        <div className="text-center">
+          <div className="h-16 bg-gray-700 rounded-lg mx-auto mb-6 w-96 animate-pulse"></div>
+          <div className="h-6 bg-gray-700 rounded mx-auto w-80 animate-pulse"></div>
         </div>
-        <span className="mt-6 text-xl text-gray-300 font-medium">Loading marketplace...</span>
-        <div className="mt-2 text-sm text-gray-500">Discovering amazing tokenized assets</div>
+
+        {/* Featured section skeleton */}
+        <div>
+          <div className="h-8 bg-gray-700 rounded w-48 mb-8 animate-pulse"></div>
+          <div className="grid grid-cols-2 gap-6">
+            {Array.from({ length: 6 }).map((_, index) => (
+              <SkeletonCard key={index} />
+            ))}
+          </div>
+        </div>
+
+        {/* New tokens skeleton */}
+        <div>
+          <div className="h-8 bg-gray-700 rounded w-40 mb-8 animate-pulse"></div>
+          <div className="bg-gray-800/30 backdrop-blur-sm rounded-2xl border border-gray-700/50 p-6">
+            <div className="grid grid-cols-3 gap-4">
+              {Array.from({ length: 6 }).map((_, index) => (
+                <div key={index} className="bg-gray-900/50 rounded-xl p-4 border border-gray-700/50 animate-pulse">
+                  <div className="flex items-center space-x-3 mb-3">
+                    <div className="w-10 h-10 bg-gray-700 rounded-lg"></div>
+                    <div className="flex-1">
+                      <div className="h-4 bg-gray-700 rounded mb-1"></div>
+                      <div className="h-3 bg-gray-700 rounded w-1/2"></div>
+                    </div>
+                  </div>
+                  <div className="text-center">
+                    <div className="h-6 bg-gray-700 rounded mb-1"></div>
+                    <div className="h-3 bg-gray-700 rounded w-3/4 mx-auto"></div>
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
+        </div>
+
+        {/* Popular tokens skeleton */}
+        <div>
+          <div className="flex justify-between items-center mb-8">
+            <div className="h-8 bg-gray-700 rounded w-48 animate-pulse"></div>
+            <div className="h-5 bg-gray-700 rounded w-20 animate-pulse"></div>
+          </div>
+          <div className="grid grid-cols-2 gap-6">
+            {Array.from({ length: 6 }).map((_, index) => (
+              <SkeletonCard key={index} />
+            ))}
+          </div>
+        </div>
       </div>
     );
   }

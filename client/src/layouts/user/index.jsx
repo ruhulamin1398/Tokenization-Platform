@@ -1,8 +1,11 @@
 import { Outlet } from 'react-router-dom';
 import { ConnectButton } from '@rainbow-me/rainbowkit';
 import TrendingTokens from '../../components/marketplace/TrendingTokens';
+import { useAccount } from '../../blockchain/hooks/useAccount';
 
 const UserLayout = () => {
+  const { address, usdtBalance } = useAccount();
+
   return (
     <div className="min-h-screen bg-gradient-to-br from-gray-900 via-gray-800 to-black">
       {/* Header */}
@@ -28,9 +31,24 @@ const UserLayout = () => {
                 className="text-gray-300 hover:text-white px-4 py-2 rounded-lg text-sm font-medium transition-colors duration-200 hover:bg-white/10"
               >
                 Dashboard
+              </a>   <a
+                href="/faucet"
+                className="text-gray-300 hover:text-white px-4 py-2 rounded-lg text-sm font-medium transition-colors duration-200 hover:bg-white/10"
+              >
+                Faucet
               </a>
             </div>
-            <ConnectButton showBalance={false} />
+            <div className="flex items-center space-x-4">
+              {address && (
+                  <div className="bg-gray-800/50 backdrop-blur-sm rounded-lg px-3 py-2 border border-gray-700/50">
+                    <div className="flex items-center space-x-2">
+                      <span className="text-xs text-gray-400 font-medium">USDT</span>
+                      <span className="text-white font-semibold">{usdtBalance}</span>
+                    </div>
+                  </div>
+              )}
+              <ConnectButton showBalance={false} />
+            </div>
           </div>
         </div>
       </header>

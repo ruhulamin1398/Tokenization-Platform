@@ -4,7 +4,25 @@ import { blockchainConfig } from '../../blockchain/config';
 const TrendingTokens = () => {
   const { tokens, isLoading } = useAllTokens();
 
-  if (isLoading || !tokens) return null;
+  if (isLoading || !tokens) {
+    return (
+      <div className="space-y-4 animate-pulse">
+        <div className="h-6 bg-gray-700 rounded w-32 mb-4"></div>
+        {Array.from({ length: 8 }).map((_, index) => (
+          <div key={index} className="bg-gray-800/50 rounded-lg p-3 border border-gray-700/50">
+            <div className="flex items-center space-x-3">
+              <div className="w-8 h-8 bg-gray-700 rounded-lg"></div>
+              <div className="flex-1">
+                <div className="h-4 bg-gray-700 rounded mb-1"></div>
+                <div className="h-3 bg-gray-700 rounded w-1/2"></div>
+              </div>
+              <div className="h-4 bg-gray-700 rounded w-16"></div>
+            </div>
+          </div>
+        ))}
+      </div>
+    );
+  }
 
   // Get top 8 tokens by price for trending
   const trendingTokens = tokens
