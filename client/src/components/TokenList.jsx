@@ -1,14 +1,23 @@
 import { useOwnerTokens } from '../blockchain/hooks/useOwnerTokens';
 import { blockchainConfig } from '../blockchain/config';
+import SkeletonIssuerCard from './SkeletonIssuerCard';
+import { Link } from 'react-router-dom';
 
 const TokenList = () => {
   const { tokens, isLoading, error } = useOwnerTokens();
 
   if (isLoading) {
     return (
-      <div className="flex justify-center items-center py-12">
-        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-gray-900"></div>
-        <span className="ml-3 text-gray-600">Loading your tokens...</span>
+      <div className="mt-8">
+        <div className="mb-6">
+          <div className="h-8 bg-gray-200 rounded w-64 mb-2 animate-pulse"></div>
+          <div className="h-5 bg-gray-200 rounded w-80 animate-pulse"></div>
+        </div>
+        <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
+          {Array.from({ length: 6 }).map((_, index) => (
+            <SkeletonIssuerCard key={index} />
+          ))}
+        </div>
       </div>
     );
   }
@@ -42,12 +51,12 @@ const TokenList = () => {
         <h3 className="mt-2 text-sm font-medium text-gray-900">No Tokens Created</h3>
         <p className="mt-1 text-sm text-gray-500">Get started by creating your first tokenized asset.</p>
         <div className="mt-6">
-          <a
-            href="/issuer/create-token"
+          <Link
+            to="/issuer/create-token"
             className="inline-flex items-center px-4 py-2 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-gray-900 hover:bg-gray-800 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-500"
           >
             Create Token
-          </a>
+          </Link>
         </div>
       </div>
     );
@@ -73,7 +82,9 @@ const TokenList = () => {
                 </span>
               </div>
             </div>
-            <p className="text-gray-600 mt-3 text-sm leading-relaxed">{token.description}</p>
+            <p className="text-gray-600 mt-3 text-sm leading-relaxed line-clamp-2 min-h-[3rem]">
+              {token.description}
+            </p>
             <div className="mt-6 space-y-3">
               <div className="flex justify-between items-center">
                 <span className="text-sm font-medium text-gray-500">Contract Address</span>

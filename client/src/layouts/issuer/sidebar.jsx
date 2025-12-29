@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { Link } from 'react-router-dom';
 
 const Sidebar = ({ collapsed, setCollapsed }) => {
   const menuItems = [
@@ -41,8 +42,8 @@ const Sidebar = ({ collapsed, setCollapsed }) => {
         <ul className="space-y-2">
           {menuItems.map((item, index) => (
             <li key={index}>
-              <a
-                href={item.href}
+              <Link
+                to={item.href}
                 className="flex items-center px-4 py-3 text-white hover:bg-gray-700 transition duration-200 group"
               >
                 <span className="flex-shrink-0 mr-3">{item.icon}</span>
@@ -54,7 +55,7 @@ const Sidebar = ({ collapsed, setCollapsed }) => {
                     {item.label}
                   </span>
                 )}
-              </a>
+              </Link>
             </li>
           ))}
         </ul>
