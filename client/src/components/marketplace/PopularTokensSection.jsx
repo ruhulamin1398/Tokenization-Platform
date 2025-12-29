@@ -1,10 +1,11 @@
 import { useState } from 'react';
 import { blockchainConfig } from '../../blockchain/config';
+import { Link } from 'react-router-dom';
 
 const PopularTokensSection = ({ tokens, onTokenSelect }) => {
   const [currentPage, setCurrentPage] = useState(1);
   const itemsPerPage = 6;
-  const popularTokens = (tokens || []).sort((a, b) => Number(b.price) - Number(a.price));
+  const popularTokens = (tokens?.slice().reverse() || []);
 
   // Calculate pagination
   const totalPages = Math.ceil(popularTokens.length / itemsPerPage);
@@ -34,9 +35,9 @@ const PopularTokensSection = ({ tokens, onTokenSelect }) => {
     <section>
       <div className="flex items-center justify-between mb-8">
         <h2 className="text-3xl font-bold text-white">Popular Tokens</h2>
-        <a href="#" className="text-purple-400 hover:text-purple-300 font-medium transition-colors duration-200">
+        <Link to="/" className="text-purple-400 hover:text-purple-300 font-medium transition-colors duration-200">
           View All →
-        </a>
+        </Link>
       </div>
 
       {popularTokens.length === 0 ? (
@@ -79,7 +80,7 @@ const PopularTokensSection = ({ tokens, onTokenSelect }) => {
                 </div>
 
                 {/* Description */}
-                <p className="text-gray-400 text-sm mb-6 line-clamp-3 leading-relaxed">
+                <p className="text-gray-400 text-sm mb-6 line-clamp-2 leading-relaxed min-h-[3rem]">
                   {token.description}
                 </p>
 

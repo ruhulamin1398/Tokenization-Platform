@@ -1,4 +1,4 @@
-import { Outlet } from 'react-router-dom';
+import { Outlet, Link } from 'react-router-dom';
 import { ConnectButton } from '@rainbow-me/rainbowkit';
 import TrendingTokens from '../../components/marketplace/TrendingTokens';
 import { useAccount } from '../../blockchain/hooks/useAccount';
@@ -13,30 +13,30 @@ const UserLayout = () => {
         <div className="w-full mx-auto px-4 sm:px-6 lg:px-8 py-4">
           <div className="flex justify-between items-center">
             <div className="flex items-center space-x-4">
-              <div className="flex items-center space-3">
+              <Link to="/" className="flex items-center space-3 hover:opacity-80 transition-opacity duration-200">
                 <div className="w-10 h-10 bg-gradient-to-r mx-2 from-purple-500 to-pink-500 rounded-lg flex items-center justify-center">
                   <span className="text-white font-bold text-lg ">T</span>
                 </div>
                 <h1 className="text-2xl font-bold bg-gradient-to-r from-white to-gray-300 bg-clip-text text-transparent">
                   Token Marketplace
                 </h1>
-              </div>
-              <a
-                href="/issuer"
+              </Link>
+              <Link
+                to="/issuer"
                 className="text-gray-300 hover:text-white px-4 py-2 rounded-lg text-sm font-medium transition-colors duration-200 hover:bg-white/10"
               >
                 Deploy Token
-              </a>   <a
-                href="/issuer"
+              </Link>   <Link
+                to="/issuer"
                 className="text-gray-300 hover:text-white px-4 py-2 rounded-lg text-sm font-medium transition-colors duration-200 hover:bg-white/10"
               >
                 Dashboard
-              </a>   <a
-                href="/faucet"
+              </Link>   <Link
+                to="/faucet"
                 className="text-gray-300 hover:text-white px-4 py-2 rounded-lg text-sm font-medium transition-colors duration-200 hover:bg-white/10"
               >
                 Faucet
-              </a>
+              </Link>
             </div>
             <div className="flex items-center space-x-4">
               {address && (

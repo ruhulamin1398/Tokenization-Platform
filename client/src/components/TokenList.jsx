@@ -1,6 +1,7 @@
 import { useOwnerTokens } from '../blockchain/hooks/useOwnerTokens';
 import { blockchainConfig } from '../blockchain/config';
 import SkeletonIssuerCard from './SkeletonIssuerCard';
+import { Link } from 'react-router-dom';
 
 const TokenList = () => {
   const { tokens, isLoading, error } = useOwnerTokens();
@@ -50,12 +51,12 @@ const TokenList = () => {
         <h3 className="mt-2 text-sm font-medium text-gray-900">No Tokens Created</h3>
         <p className="mt-1 text-sm text-gray-500">Get started by creating your first tokenized asset.</p>
         <div className="mt-6">
-          <a
-            href="/issuer/create-token"
+          <Link
+            to="/issuer/create-token"
             className="inline-flex items-center px-4 py-2 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-gray-900 hover:bg-gray-800 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-500"
           >
             Create Token
-          </a>
+          </Link>
         </div>
       </div>
     );

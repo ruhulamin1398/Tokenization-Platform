@@ -18,7 +18,7 @@ const customStyles = `
 `;
 
 const NewTokensSection = ({ tokens, onTokenSelect }) => {
-  const newTokens = tokens?.slice(0, 10) || [];
+  const newTokens = (tokens?.slice(-10) || []).reverse();
 
   return (
     <>
@@ -63,24 +63,62 @@ const NewTokensSection = ({ tokens, onTokenSelect }) => {
         >
           {newTokens.map((token, index) => (
             <div key={index} className="px-2">
-              <div className="bg-gray-900/50 rounded-xl p-4 border border-gray-700/50 hover:border-purple-500/50 transition-all duration-200 cursor-pointer h-full" onClick={() => onTokenSelect(token)}>
-                <div className="flex items-center space-x-3 mb-3">
-                  <div className="w-10 h-10 bg-gradient-to-r from-purple-500 to-pink-500 rounded-lg flex items-center justify-center">
-                    <span className="text-white font-bold">{token.symbol.charAt(0)}</span>
+              <div className="group relative bg-white/5 backdrop-blur-xl rounded-2xl p-6 border border-white/10 hover:border-white/20 hover:bg-white/10 transition-all duration-500 cursor-pointer h-full overflow-hidden">
+                {/* Animated background gradient */}
+                <div className="absolute inset-0 bg-gradient-to-br from-blue-500/5 via-purple-500/5 to-pink-500/5 opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
+
+                {/* Content */}
+                <div className="relative z-10">
+                  {/* Token Icon & Basic Info */}
+                  <div className="flex items-start justify-between mb-6">
+                    <div className="flex items-center space-x-3">
+                      <div className="w-14 h-14 bg-gradient-to-br from-cyan-400 via-blue-500 to-purple-600 rounded-2xl flex items-center justify-center  ">
+                        <span className="text-white font-black text-xl">{token.symbol.charAt(0)}</span>
+                      </div>
+                      <div>
+                        <h3 className="text-white font-bold text-lg leading-tight">{token.name}</h3>
+                        <p className="text-cyan-400 font-semibold text-sm">{token.symbol}</p>
+                      </div>
+                    </div>
+                    <div className="flex items-center space-x-1">
+                      <div className="w-2 h-2 bg-green-400 rounded-full animate-pulse"></div>
+                      <span className="text-green-400 text-xs font-medium">Live</span>
+                    </div>
                   </div>
-                  <div className="flex-1 min-w-0">
-                    <h4 className="text-white font-semibold truncate">{token.name}</h4>
-                    <p className="text-gray-400 text-sm">{token.symbol}</p>
+
+                  {/* Price Display - Centered */}
+                  <div className="text-center mb-6">
+                    <div className="inline-flex items-baseline space-x-2 bg-gradient-to-r from-cyan-400/10 to-purple-500/10 rounded-xl px-6 py-3 border border-cyan-400/20">
+                      <span className="text-xl font-black text-white">
+                        {Number(token.price) / 10**blockchainConfig.USDT_DECIMALS}
+                      </span>
+                      <span className="text-cyan-400 font-bold text-xl">USDT</span>
+                    </div> 
+                  </div>
+
+                  {/* Availability */}
+                  <div className="flex items-center justify-between pt-4 border-t border-white/10">
+                    <div>
+                      <p className="text-gray-400 text-sm">Available</p>
+                      <p className="text-white font-semibold">
+                        {Number(token.maxSupply) - Number(token.totalSupply)} tokens
+                      </p>
+                    </div>
+                    <div className="text-right">
+                      <div className="w-12 h-2 bg-gray-700 rounded-full overflow-hidden">
+                        <div
+                          className="h-full bg-gradient-to-r from-cyan-400 to-purple-500 rounded-full transition-all duration-1000"
+                          style={{
+                            width: `${Math.min(100, ((Number(token.maxSupply) - Number(token.totalSupply)) / Number(token.maxSupply)) * 100)}%`
+                          }}
+                        ></div>
+                      </div>
+                    </div>
                   </div>
                 </div>
-                <div className="text-center">
-                  <p className="text-green-400 font-bold text-lg">
-                    {Number(token.price) / 10**blockchainConfig.USDT_DECIMALS} USDT
-                  </p>
-                  <p className="text-gray-500 text-xs mt-1">
-                    {Number(token.maxSupply) - Number(token.totalSupply)} available
-                  </p>
-                </div>
+
+                {/* Subtle border animation */}
+                <div className="absolute inset-0 rounded-2xl bg-gradient-to-r from-cyan-400/20 via-purple-500/20 to-pink-500/20 opacity-0 group-hover:opacity-100 transition-opacity duration-500 -m-px"></div>
               </div>
             </div>
           ))}
