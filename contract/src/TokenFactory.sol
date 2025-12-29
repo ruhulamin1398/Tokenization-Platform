@@ -14,6 +14,12 @@ contract TokenFactory is Ownable, Pausable, ReentrancyGuard {
 
     address public usdtToken;
 
+    // Constants
+    uint256 public constant MAX_NAME_LENGTH = 50;
+    uint256 public constant MAX_SYMBOL_LENGTH = 10;
+    uint256 public constant MAX_DESCRIPTION_LENGTH = 500;
+    uint256 public constant MAX_TOKENS_PER_PAGE = 100;
+
     struct TokenInfo {
         address tokenAddress;
         address owner;
@@ -47,6 +53,10 @@ contract TokenFactory is Ownable, Pausable, ReentrancyGuard {
 
     event TokenPurchased(address indexed buyer, address indexed tokenAddress, uint256 amount, uint256 totalPrice);
 
+    event FactoryPaused(address indexed account);
+    event FactoryUnpaused(address indexed account);
+    event TokenPriceUpdated(address indexed tokenAddress, uint256 oldPrice, uint256 newPrice);
+
     constructor(address _usdtToken, address _owner) Ownable(_owner) {
         require(_usdtToken != address(0), "Invalid USDT token address");
         require(_owner != address(0), "Invalid owner address");
@@ -75,8 +85,11 @@ contract TokenFactory is Ownable, Pausable, ReentrancyGuard {
         require(maxSupply > 0, "Max supply must be greater than 0");
         require(price > 0, "Price must be greater than 0");
         require(bytes(name).length > 0, "Name cannot be empty");
+        require(bytes(name).length <= MAX_NAME_LENGTH, "Name too long");
         require(bytes(symbol).length > 0, "Symbol cannot be empty");
+        require(bytes(symbol).length <= MAX_SYMBOL_LENGTH, "Symbol too long");
         require(bytes(description).length > 0, "Description cannot be empty");
+        require(bytes(description).length <= MAX_DESCRIPTION_LENGTH, "Description too long");
 
         // Deploy new token contract
         AssetToken newToken = new AssetToken(name, symbol);
@@ -112,19 +125,29 @@ contract TokenFactory is Ownable, Pausable, ReentrancyGuard {
      * @param tokenAddress Address of the token to purchase
      * @param amount Number of tokens to purchase
      */
-    function purchaseToken(address tokenAddress, uint256 amount) external nonReentrant {
+    function purchaseToken(address tokenAddress, uint256 amount) external whenNotPaused nonReentrant {
         TokenInfo storage tokenInfo = tokens[tokenAddress];
         require(tokenInfo.tokenAddress != address(0), "Token does not exist");
+        require(amount > 0, "Amount must be greater than 0");
 
-        uint256 totalPrice = amount * tokenInfo.price;
+        // Overflow protection for price calculation
+        require(tokenInfo.price > 0, "Invalid token price");
+        uint256 totalPrice;
+        unchecked {
+            totalPrice = amount * tokenInfo.price;
+        }
+        require(totalPrice / amount == tokenInfo.price, "Price overflow");
 
-        // Check remaining supply
+        // Check remaining supply (re-check before minting to prevent race conditions)
         require(tokenInfo.totalSupply + amount <= tokenInfo.maxSupply, "Insufficient tokens available");
 
         // Transfer USDT from buyer to token owner
         IERC20(usdtToken).safeTransferFrom(msg.sender, tokenInfo.owner, totalPrice);
 
         AssetToken token = AssetToken(tokenAddress);
+
+        // Double-check supply before minting (CEI pattern)
+        require(tokenInfo.totalSupply + amount <= tokenInfo.maxSupply, "Insufficient tokens available");
 
         // Mint tokens to buyer
         token.mint(msg.sender, amount);
@@ -138,13 +161,32 @@ contract TokenFactory is Ownable, Pausable, ReentrancyGuard {
      */
     function pauseFactory() external onlyOwner {
         _pause();
+        emit FactoryPaused(msg.sender);
     }
+
     /**
      * @dev Unpause the factory contract
      */
-
     function unpauseFactory() external onlyOwner {
         _unpause();
+        emit FactoryUnpaused(msg.sender);
+    }
+
+    /**
+     * @dev Update the price of a token (only token owner can update)
+     * @param tokenAddress Address of the token
+     * @param newPrice New price per token in USDT (with decimals)
+     */
+    function updateTokenPrice(address tokenAddress, uint256 newPrice) external {
+        TokenInfo storage tokenInfo = tokens[tokenAddress];
+        require(tokenInfo.tokenAddress != address(0), "Token does not exist");
+        require(tokenInfo.owner == msg.sender, "Only token owner can update price");
+        require(newPrice > 0, "Price must be greater than 0");
+
+        uint256 oldPrice = tokenInfo.price;
+        tokenInfo.price = newPrice;
+
+        emit TokenPriceUpdated(tokenAddress, oldPrice, newPrice);
     }
     /**
      * @dev Get all tokens created by a specific owner
@@ -182,15 +224,16 @@ contract TokenFactory is Ownable, Pausable, ReentrancyGuard {
 
         return ownerTokenInfos;
     }
+
     /**
-     * @dev Get tokens in a specific index range
+     * @dev Get tokens in a specific index range with pagination
      * @param startIndex Starting index (inclusive)
      * @param endIndex Ending index (exclusive)
      */
-
     function getTokens(uint256 startIndex, uint256 endIndex) external view returns (TokenInfo[] memory) {
         require(startIndex < endIndex, "Invalid index range");
         require(endIndex <= tokenAddressList.length, "End index out of bounds");
+        require(endIndex - startIndex <= MAX_TOKENS_PER_PAGE, "Too many tokens requested");
 
         uint256 count = endIndex - startIndex;
         TokenInfo[] memory tokenInfos = new TokenInfo[](count);
@@ -202,12 +245,50 @@ contract TokenFactory is Ownable, Pausable, ReentrancyGuard {
 
         return tokenInfos;
     }
-    /**
-     * @dev Get all tokens in the platform
-     */
 
+    /**
+     * @dev Get paginated tokens
+     * @param page Page number (0-indexed)
+     * @param pageSize Number of tokens per page
+     */
+    function getTokensPaginated(uint256 page, uint256 pageSize)
+        external
+        view
+        returns (TokenInfo[] memory, uint256 total)
+    {
+        require(pageSize > 0, "Page size must be greater than 0");
+        require(pageSize <= MAX_TOKENS_PER_PAGE, "Page size too large");
+
+        total = tokenAddressList.length;
+        uint256 startIndex = page * pageSize;
+
+        if (startIndex >= total) {
+            return (new TokenInfo[](0), total);
+        }
+
+        uint256 endIndex = startIndex + pageSize;
+        if (endIndex > total) {
+            endIndex = total;
+        }
+
+        uint256 count = endIndex - startIndex;
+        TokenInfo[] memory tokenInfos = new TokenInfo[](count);
+
+        for (uint256 i = 0; i < count; i++) {
+            address tokenAddress = tokenAddressList[startIndex + i];
+            tokenInfos[i] = tokens[tokenAddress];
+        }
+
+        return (tokenInfos, total);
+    }
+
+    /**
+     * @dev Get all tokens in the platform (use with caution - can be gas expensive)
+     */
     function getAllTokens() external view returns (TokenInfo[] memory) {
         uint256 count = tokenAddressList.length;
+        require(count <= MAX_TOKENS_PER_PAGE, "Too many tokens - use pagination");
+
         TokenInfo[] memory tokenInfos = new TokenInfo[](count);
 
         for (uint256 i = 0; i < count; i++) {

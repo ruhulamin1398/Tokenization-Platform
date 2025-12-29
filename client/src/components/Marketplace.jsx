@@ -105,24 +105,21 @@ const Marketplace = () => {
   }
 
   return (
-    <>
-      <style dangerouslySetInnerHTML={{ __html: customStyles }} />
-      <div className="space-y-12">
-        {/* <HeroSection tokens={tokens} /> */}
-        
-        <FeaturedTokensSection tokens={tokens} onTokenSelect={setSelectedToken} />
-       
-        <NewTokensSection tokens={tokens} onTokenSelect={setSelectedToken} />
-        <PopularTokensSection tokens={tokens} onTokenSelect={setSelectedToken} />
+    <div className="space-y-12">
+      {/* <HeroSection tokens={tokens} /> */}
+      
+      <FeaturedTokensSection tokens={tokens} onTokenSelect={setSelectedToken} />
+     
+      <NewTokensSection tokens={tokens} onTokenSelect={setSelectedToken} />
+      <PopularTokensSection tokens={tokens} onTokenSelect={setSelectedToken} />
 
-        {selectedToken && (
-          <PurchaseModal
-            token={selectedToken}
-            onClose={() => setSelectedToken(null)}
-          />
-        )}
-      </div>
-    </>
+      {selectedToken && (
+        <PurchaseModal
+          token={selectedToken}
+          onClose={() => setSelectedToken(null)}
+        />
+      )}
+    </div>
   );
 };
 

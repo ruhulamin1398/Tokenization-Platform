@@ -1,0 +1,19 @@
+/* Custom styles for slick arrows */
+.slick-prev:before,
+.slick-next:before {
+  color: #9ca3af !important;
+}
+
+.slick-prev:hover:before,
+.slick-next:hover:before {
+  color: #a855f7 !important;
+}
+
+.slick-dots li button:before {
+  color: #6b7280 !important;
+}
+
+.slick-dots li.slick-active button:before {
+  color: #a855f7 !important;
+}
+
