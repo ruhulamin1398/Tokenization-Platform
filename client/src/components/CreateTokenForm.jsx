@@ -17,17 +17,58 @@ const CreateTokenForm = () => {
  
 
   const handleChange = (e) => {
+    const { name, value } = e.target;
+    
+    // Validation based on field type
+    if (name === 'name' && value.length > 50) {
+      return; // Don't update if exceeds max length
+    }
+    if (name === 'symbol' && value.length > 10) {
+      return; // Don't update if exceeds max length
+    }
+    if (name === 'description' && value.length > 500) {
+      return; // Don't update if exceeds max length
+    }
+    
     setFormData({
       ...formData,
-      [e.target.name]: e.target.value,
+      [name]: value,
     });
   };
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    const maxSupply = parseInt(formData.maxSupply);
-    const price = parseInt(formData.price);
-    createToken(formData.name, formData.symbol, formData.description, maxSupply, price);
+    
+    // Client-side validation
+    if (!formData.name.trim() || formData.name.length > 50) {
+      alert('Token name must be between 1 and 50 characters');
+      return;
+    }
+    
+    if (!formData.symbol.trim() || formData.symbol.length > 10) {
+      alert('Token symbol must be between 1 and 10 characters');
+      return;
+    }
+    
+    if (!formData.description.trim() || formData.description.length > 500) {
+      alert('Description must be between 1 and 500 characters');
+      return;
+    }
+    
+    const maxSupply = parseFloat(formData.maxSupply);
+    const price = parseFloat(formData.price);
+    
+    if (isNaN(maxSupply) || maxSupply <= 0 || !Number.isInteger(maxSupply)) {
+      alert('Max supply must be a positive integer');
+      return;
+    }
+    
+    if (isNaN(price) || price <= 0) {
+      alert('Price must be a positive number');
+      return;
+    }
+    
+    createToken(formData.name.trim(), formData.symbol.trim(), formData.description.trim(), maxSupply, price);
   };
 
   return (
@@ -48,8 +89,12 @@ const CreateTokenForm = () => {
               onChange={handleChange}
               className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition duration-200"
               placeholder="e.g., My Gold Token"
+              maxLength={50}
               required
             />
+            {formData.name.length > 0 && (
+              <p className="text-xs text-gray-500 mt-1">{formData.name.length}/50 characters</p>
+            )}
           </div>
           <div>
             <label className="block text-sm font-medium text-gray-700 mb-2">Symbol</label>
@@ -60,8 +105,12 @@ const CreateTokenForm = () => {
               onChange={handleChange}
               className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition duration-200"
               placeholder="e.g., GLD"
+              maxLength={10}
               required
             />
+            {formData.symbol.length > 0 && (
+              <p className="text-xs text-gray-500 mt-1">{formData.symbol.length}/10 characters</p>
+            )}
           </div>
         </div>
 
@@ -74,8 +123,12 @@ const CreateTokenForm = () => {
             rows="4"
             className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition duration-200 resize-none"
             placeholder="Describe your tokenized asset..."
+            maxLength={500}
             required
           />
+          {formData.description.length > 0 && (
+            <p className="text-xs text-gray-500 mt-1">{formData.description.length}/500 characters</p>
+          )}
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">

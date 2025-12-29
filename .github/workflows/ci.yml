@@ -1,0 +1,95 @@
+name: CI
+
+on:
+  push:
+    branches: [ main, develop, master ]
+  pull_request:
+    branches: [ main, develop, master ]
+
+env:
+  FOUNDRY_PROFILE: default
+
+jobs:
+  # Contract checks
+  contract-checks:
+    name: Contract Checks
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: contract
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+        with:
+          submodules: recursive
+
+      - name: Install Foundry
+        uses: foundry-rs/foundry-toolchain@v1
+        with:
+          version: nightly
+
+      - name: Install dependencies
+        run: |
+          forge install cyfrin/foundry-devops@0.2.2 --no-commit || true
+          forge install foundry-rs/forge-std@v1.11.0 --no-commit || true
+          forge install OpenZeppelin/openzeppelin-contracts --no-commit || true
+
+      - name: Format check
+        run: forge fmt --check
+
+      - name: Build contracts
+        run: forge build
+
+      - name: Run tests
+        run: forge test --summary
+
+  # Frontend checks
+  frontend-checks:
+    name: Frontend Checks
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: client
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      - name: Install dependencies
+        run: |
+          if [ -f package-lock.json ]; then
+            npm ci
+          elif [ -f bun.lock ]; then
+            npm install -g bun
+            bun install --frozen-lockfile
+          else
+            npm install
+          fi
+
+      - name: Lint
+        run: npm run lint
+
+      - name: Build
+        run: npm run build
+
+  # Combined status check
+  ci-status:
+    name: CI Status
+    runs-on: ubuntu-latest
+    needs: [contract-checks, frontend-checks]
+    if: always()
+    steps:
+      - name: Check job results
+        run: |
+          if [ "${{ needs.contract-checks.result }}" != "success" ] || [ "${{ needs.frontend-checks.result }}" != "success" ]; then
+            echo "❌ CI checks failed"
+            exit 1
+          fi
+          echo "✅ All CI checks passed"
+

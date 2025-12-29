@@ -5,24 +5,7 @@ import HeroSection from './marketplace/HeroSection';
 import FeaturedTokensSection from './marketplace/FeaturedTokensSection';
 import NewTokensSection from './marketplace/NewTokensSection';
 import PopularTokensSection from './marketplace/PopularTokensSection';
-
-// Custom styles for slick arrows
-const customStyles = `
-  .slick-prev:before,
-  .slick-next:before {
-    color: #9ca3af !important;
-  }
-  .slick-prev:hover:before,
-  .slick-next:hover:before {
-    color: #a855f7 !important;
-  }
-  .slick-dots li button:before {
-    color: #6b7280 !important;
-  }
-  .slick-dots li.slick-active button:before {
-    color: #a855f7 !important;
-  }
-`;
+import './Marketplace.css';
 
 const Marketplace = () => {
   const { tokens, isLoading, error } = useAllTokens();
@@ -58,24 +41,21 @@ const Marketplace = () => {
   }
 
   return (
-    <>
-      <style dangerouslySetInnerHTML={{ __html: customStyles }} />
-      <div className="space-y-12">
-        {/* <HeroSection tokens={tokens} /> */}
-        
-        <FeaturedTokensSection tokens={tokens} onTokenSelect={setSelectedToken} />
-       
-        <NewTokensSection tokens={tokens} onTokenSelect={setSelectedToken} />
-        <PopularTokensSection tokens={tokens} onTokenSelect={setSelectedToken} />
+    <div className="space-y-12">
+      {/* <HeroSection tokens={tokens} /> */}
+      
+      <FeaturedTokensSection tokens={tokens} onTokenSelect={setSelectedToken} />
+     
+      <NewTokensSection tokens={tokens} onTokenSelect={setSelectedToken} />
+      <PopularTokensSection tokens={tokens} onTokenSelect={setSelectedToken} />
 
-        {selectedToken && (
-          <PurchaseModal
-            token={selectedToken}
-            onClose={() => setSelectedToken(null)}
-          />
-        )}
-      </div>
-    </>
+      {selectedToken && (
+        <PurchaseModal
+          token={selectedToken}
+          onClose={() => setSelectedToken(null)}
+        />
+      )}
+    </div>
   );
 };
 
