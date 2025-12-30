@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useCreateToken } from '../blockchain/hooks/useCreateToken';
 
 const CreateTokenForm = () => {
@@ -12,7 +12,18 @@ const CreateTokenForm = () => {
 
   const { createToken, isPending, isSuccess, error, hash } = useCreateToken();
 
- 
+  // Reset form after successful token creation
+  useEffect(() => {
+    if (isSuccess) {
+      setFormData({
+        name: '',
+        symbol: '',
+        description: '',
+        maxSupply: '',
+        price: '',
+      });
+    }
+  }, [isSuccess]);
 
  
 

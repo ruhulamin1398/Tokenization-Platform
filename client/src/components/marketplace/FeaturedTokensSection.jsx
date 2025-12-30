@@ -3,9 +3,11 @@ import { blockchainConfig } from '../../blockchain/config';
 import Slider from 'react-slick';
 import 'slick-carousel/slick/slick.css';
 import 'slick-carousel/slick/slick-theme.css';
+import { useUtils } from '../../blockchain/hooks/useUtils';
 
 const FeaturedTokensSection = ({ tokens, onTokenSelect }) => {
   const featuredTokens = tokens?.slice( -5) || [];
+    const { convertToHumanReadable, convertToDecimalUnits } = useUtils();
 
   return (
     <section>
@@ -83,13 +85,13 @@ const FeaturedTokensSection = ({ tokens, onTokenSelect }) => {
                       <div className="bg-black/20 backdrop-blur-sm rounded-xl p-3 border border-gray-700/50">
                         <p className="text-gray-400 text-xs font-medium mb-1">Price</p>
                         <p className="text-xl font-bold bg-gradient-to-r from-green-400 to-emerald-400 bg-clip-text text-transparent">
-                          {Number(token.price) / 10**blockchainConfig.USDT_DECIMALS} USDT
+                          {Number(token.price)  } USDT
                         </p>
                       </div>
                       <div className="bg-black/20 backdrop-blur-sm rounded-xl p-3 border border-gray-700/50">
                         <p className="text-gray-400 text-xs font-medium mb-1">Available</p>
                         <p className="text-lg font-bold text-white">
-                          {Number(token.maxSupply) - Number(token.totalSupply)}
+                          {convertToHumanReadable(token.maxSupply) - convertToHumanReadable(token.totalSupply)}
                         </p>
                       </div>
                     </div>

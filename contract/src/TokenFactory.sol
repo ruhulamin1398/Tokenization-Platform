@@ -7,6 +7,7 @@ import {Pausable} from "@openzeppelin/contracts/utils/Pausable.sol";
 import {AssetToken} from "./AssetToken.sol";
 import {SafeERC20} from "@openzeppelin/contracts/token/ERC20/utils/SafeERC20.sol";
 import {ReentrancyGuard} from "@openzeppelin/contracts/utils/ReentrancyGuard.sol";
+import {Strings} from "@openzeppelin/contracts/utils/Strings.sol";
 
 // Factory Contract
 contract TokenFactory is Ownable, Pausable, ReentrancyGuard {
@@ -139,7 +140,17 @@ contract TokenFactory is Ownable, Pausable, ReentrancyGuard {
         require(totalPrice / amount == tokenInfo.price, "Price overflow");
 
         // Check remaining supply (re-check before minting to prevent race conditions)
-        require(tokenInfo.totalSupply + amount <= tokenInfo.maxSupply, "Insufficient tokens available");
+        require(
+            tokenInfo.totalSupply + amount <= tokenInfo.maxSupply,
+            string(
+                abi.encodePacked(
+                    "Insufficient tokens available. Requested: ",
+                    Strings.toString(amount),
+                    ", Available: ",
+                    Strings.toString(tokenInfo.maxSupply - tokenInfo.totalSupply)
+                )
+            )
+        );
 
         // Transfer USDT from buyer to token owner
         IERC20(usdtToken).safeTransferFrom(msg.sender, tokenInfo.owner, totalPrice);
@@ -147,7 +158,17 @@ contract TokenFactory is Ownable, Pausable, ReentrancyGuard {
         AssetToken token = AssetToken(tokenAddress);
 
         // Double-check supply before minting (CEI pattern)
-        require(tokenInfo.totalSupply + amount <= tokenInfo.maxSupply, "Insufficient tokens available");
+        require(
+            tokenInfo.totalSupply + amount <= tokenInfo.maxSupply,
+            string(
+                abi.encodePacked(
+                    "Insufficient tokens available (CEI check). Requested: ",
+                    Strings.toString(amount),
+                    ", Available: ",
+                    Strings.toString(tokenInfo.maxSupply - tokenInfo.totalSupply)
+                )
+            )
+        );
 
         // Mint tokens to buyer
         token.mint(msg.sender, amount);

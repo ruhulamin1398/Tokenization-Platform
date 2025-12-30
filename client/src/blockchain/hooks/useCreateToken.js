@@ -1,9 +1,7 @@
 import { useWriteContract, useWaitForTransactionReceipt } from 'wagmi';
 import { blockchainConfig } from '../config';
 import { toast } from 'react-toastify';
-import { useEffect } from 'react';
-import { parseUnits } from 'viem';
-
+import { useEffect } from 'react'; 
 export const useCreateToken = () => {
   const { writeContract, data: hash, isPending, error } = useWriteContract();
 
@@ -38,27 +36,28 @@ export const useCreateToken = () => {
       return;
     }
     
-    const maxSupplyBigInt = BigInt(Math.floor(maxSupply));
+    const maxSupplyBigInt = BigInt(Math.floor(maxSupply)*10**blockchainConfig.TOKEN_DECIMALS);
     if (maxSupplyBigInt <= 0n) {
       toast.error('Max supply must be greater than 0');
       return;
     }
     
     // Convert price to wei with proper decimals
-    const priceInWei = parseUnits(price.toString(), blockchainConfig.USDT_DECIMALS);
-    if (priceInWei <= 0n) {
+    const formatedPrice = BigInt(price);
+    if (formatedPrice <= 0n) {
       toast.error('Price must be greater than 0');
       return;
     }
 
     toast.dismiss();
     toast.loading('Creating token on blockchain...');
+    console.log("Creating token with params: ",{name, symbol, description, maxSupplyBigInt, formatedPrice});
     
     writeContract({
       address: blockchainConfig.FACTORY_CONTRACT_ADDRESS,
       abi: blockchainConfig.TOKEN_FACTORY_ABI,
       functionName: 'createToken',
-      args: [name, symbol, description, maxSupplyBigInt, priceInWei],
+      args: [name, symbol, description, maxSupplyBigInt, formatedPrice],
     });
   };
 

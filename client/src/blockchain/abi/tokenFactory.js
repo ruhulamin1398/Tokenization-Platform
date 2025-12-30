@@ -17,6 +17,58 @@ export const TOKEN_FACTORY_ABI =  [
         },
         {
             "type": "function",
+            "name": "MAX_DESCRIPTION_LENGTH",
+            "inputs": [],
+            "outputs": [
+                {
+                    "name": "",
+                    "type": "uint256",
+                    "internalType": "uint256"
+                }
+            ],
+            "stateMutability": "view"
+        },
+        {
+            "type": "function",
+            "name": "MAX_NAME_LENGTH",
+            "inputs": [],
+            "outputs": [
+                {
+                    "name": "",
+                    "type": "uint256",
+                    "internalType": "uint256"
+                }
+            ],
+            "stateMutability": "view"
+        },
+        {
+            "type": "function",
+            "name": "MAX_SYMBOL_LENGTH",
+            "inputs": [],
+            "outputs": [
+                {
+                    "name": "",
+                    "type": "uint256",
+                    "internalType": "uint256"
+                }
+            ],
+            "stateMutability": "view"
+        },
+        {
+            "type": "function",
+            "name": "MAX_TOKENS_PER_PAGE",
+            "inputs": [],
+            "outputs": [
+                {
+                    "name": "",
+                    "type": "uint256",
+                    "internalType": "uint256"
+                }
+            ],
+            "stateMutability": "view"
+        },
+        {
+            "type": "function",
             "name": "balanceOf",
             "inputs": [
                 {
@@ -394,6 +446,82 @@ export const TOKEN_FACTORY_ABI =  [
         },
         {
             "type": "function",
+            "name": "getTokensPaginated",
+            "inputs": [
+                {
+                    "name": "page",
+                    "type": "uint256",
+                    "internalType": "uint256"
+                },
+                {
+                    "name": "pageSize",
+                    "type": "uint256",
+                    "internalType": "uint256"
+                }
+            ],
+            "outputs": [
+                {
+                    "name": "",
+                    "type": "tuple[]",
+                    "internalType": "struct TokenFactory.TokenInfo[]",
+                    "components": [
+                        {
+                            "name": "tokenAddress",
+                            "type": "address",
+                            "internalType": "address"
+                        },
+                        {
+                            "name": "owner",
+                            "type": "address",
+                            "internalType": "address"
+                        },
+                        {
+                            "name": "name",
+                            "type": "string",
+                            "internalType": "string"
+                        },
+                        {
+                            "name": "symbol",
+                            "type": "string",
+                            "internalType": "string"
+                        },
+                        {
+                            "name": "description",
+                            "type": "string",
+                            "internalType": "string"
+                        },
+                        {
+                            "name": "maxSupply",
+                            "type": "uint256",
+                            "internalType": "uint256"
+                        },
+                        {
+                            "name": "totalSupply",
+                            "type": "uint256",
+                            "internalType": "uint256"
+                        },
+                        {
+                            "name": "price",
+                            "type": "uint256",
+                            "internalType": "uint256"
+                        },
+                        {
+                            "name": "createdAt",
+                            "type": "uint256",
+                            "internalType": "uint256"
+                        }
+                    ]
+                },
+                {
+                    "name": "total",
+                    "type": "uint256",
+                    "internalType": "uint256"
+                }
+            ],
+            "stateMutability": "view"
+        },
+        {
+            "type": "function",
             "name": "owner",
             "inputs": [],
             "outputs": [
@@ -574,6 +702,24 @@ export const TOKEN_FACTORY_ABI =  [
         },
         {
             "type": "function",
+            "name": "updateTokenPrice",
+            "inputs": [
+                {
+                    "name": "tokenAddress",
+                    "type": "address",
+                    "internalType": "address"
+                },
+                {
+                    "name": "newPrice",
+                    "type": "uint256",
+                    "internalType": "uint256"
+                }
+            ],
+            "outputs": [],
+            "stateMutability": "nonpayable"
+        },
+        {
+            "type": "function",
             "name": "usdtToken",
             "inputs": [],
             "outputs": [
@@ -584,6 +730,32 @@ export const TOKEN_FACTORY_ABI =  [
                 }
             ],
             "stateMutability": "view"
+        },
+        {
+            "type": "event",
+            "name": "FactoryPaused",
+            "inputs": [
+                {
+                    "name": "account",
+                    "type": "address",
+                    "indexed": true,
+                    "internalType": "address"
+                }
+            ],
+            "anonymous": false
+        },
+        {
+            "type": "event",
+            "name": "FactoryUnpaused",
+            "inputs": [
+                {
+                    "name": "account",
+                    "type": "address",
+                    "indexed": true,
+                    "internalType": "address"
+                }
+            ],
+            "anonymous": false
         },
         {
             "type": "event",
@@ -653,6 +825,31 @@ export const TOKEN_FACTORY_ABI =  [
                 },
                 {
                     "name": "price",
+                    "type": "uint256",
+                    "indexed": false,
+                    "internalType": "uint256"
+                }
+            ],
+            "anonymous": false
+        },
+        {
+            "type": "event",
+            "name": "TokenPriceUpdated",
+            "inputs": [
+                {
+                    "name": "tokenAddress",
+                    "type": "address",
+                    "indexed": true,
+                    "internalType": "address"
+                },
+                {
+                    "name": "oldPrice",
+                    "type": "uint256",
+                    "indexed": false,
+                    "internalType": "uint256"
+                },
+                {
+                    "name": "newPrice",
                     "type": "uint256",
                     "indexed": false,
                     "internalType": "uint256"

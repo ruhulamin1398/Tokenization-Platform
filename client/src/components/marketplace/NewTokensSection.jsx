@@ -90,7 +90,7 @@ const NewTokensSection = ({ tokens, onTokenSelect }) => {
                   <div className="text-center mb-6">
                     <div className="inline-flex items-baseline space-x-2 bg-gradient-to-r from-cyan-400/10 to-purple-500/10 rounded-xl px-6 py-3 border border-cyan-400/20">
                       <span className="text-xl font-black text-white">
-                        {Number(token.price) / 10**blockchainConfig.USDT_DECIMALS}
+                        {Number(token.price)  }
                       </span>
                       <span className="text-cyan-400 font-bold text-xl">USDT</span>
                     </div> 

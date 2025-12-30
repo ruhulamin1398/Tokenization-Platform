@@ -17,5 +17,6 @@ export const useAccount = () => {
     ...accountData,
     address,
     usdtBalance: formattedUsdtBalance,
+    rawUsdtBalance: usdtBalance || 0n,
   };
 };

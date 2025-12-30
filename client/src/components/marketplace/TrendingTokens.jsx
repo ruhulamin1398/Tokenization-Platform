@@ -42,7 +42,7 @@ const TrendingTokens = () => {
               <div className="flex-1 min-w-0">
                 <p className="text-white font-medium text-sm">{token.symbol}</p>
                 <p className="text-green-400 font-bold text-sm">
-                  {Number(token.price) / 10**blockchainConfig.USDT_DECIMALS} USDT
+                  {Number(token.price) } USDT
                 </p>
               </div>
             </div>

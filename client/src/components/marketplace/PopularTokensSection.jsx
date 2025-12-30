@@ -1,11 +1,14 @@
 import { useState } from 'react';
 import { blockchainConfig } from '../../blockchain/config';
 import { Link } from 'react-router-dom';
+import { useUtils } from '../../blockchain/hooks/useUtils';
 
 const PopularTokensSection = ({ tokens, onTokenSelect }) => {
   const [currentPage, setCurrentPage] = useState(1);
   const itemsPerPage = 6;
   const popularTokens = (tokens?.slice().reverse() || []);
+  
+      const { convertToHumanReadable, convertToDecimalUnits } = useUtils();
 
   // Calculate pagination
   const totalPages = Math.ceil(popularTokens.length / itemsPerPage);
@@ -90,7 +93,7 @@ const PopularTokensSection = ({ tokens, onTokenSelect }) => {
                     <span className="text-gray-500 text-sm">Price</span>
                     <div className="flex items-center space-x-1">
                       <span className="text-2xl font-bold bg-gradient-to-r from-green-400 to-emerald-400 bg-clip-text text-transparent">
-                        {Number(token.price) / 10**blockchainConfig.USDT_DECIMALS}
+                        {Number(token.price) }
                       </span>
                       <span className="text-green-400 font-medium">USDT</span>
                     </div>
@@ -98,7 +101,7 @@ const PopularTokensSection = ({ tokens, onTokenSelect }) => {
                   <div className="flex justify-between items-center">
                     <span className="text-gray-500 text-sm">Available</span>
                     <span className="text-white font-semibold">
-                      {Number(token.maxSupply) - Number(token.totalSupply)} / {Number(token.maxSupply)}
+                      {convertToHumanReadable(token.maxSupply) - convertToHumanReadable(token.totalSupply)} / {convertToHumanReadable(token.maxSupply)}
                     </span>
                   </div>
                 </div>

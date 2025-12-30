@@ -3,6 +3,10 @@ src = "src"
 out = "out"
 libs = ["lib"]
 
+# Optimizer settings
+optimizer = true
+runs = 200
+
 # Remappings for dependencies
 remappings = [
     "@openzeppelin/=lib/openzeppelin-contracts/",
