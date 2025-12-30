@@ -33,7 +33,7 @@ const UserLayout = () => {
                 My Portfolio
               </Link>
               <Link
-                to="/browse"
+                to="/browse-tokens"
                 className="text-gray-300 hover:text-white px-4 py-2 rounded-lg text-sm font-medium transition-colors duration-200 hover:bg-white/10"
               >
                 Browse Tokens
