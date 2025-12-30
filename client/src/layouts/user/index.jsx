@@ -26,11 +26,11 @@ const UserLayout = () => {
                 className="text-gray-300 hover:text-white px-4 py-2 rounded-lg text-sm font-medium transition-colors duration-200 hover:bg-white/10"
               >
                 Deploy Token
-              </Link>   <Link
-                to="/issuer"
+              </Link>     <Link
+                to="/dashboard"
                 className="text-gray-300 hover:text-white px-4 py-2 rounded-lg text-sm font-medium transition-colors duration-200 hover:bg-white/10"
               >
-                Dashboard
+                My Portfolio
               </Link>   <Link
                 to="/faucet"
                 className="text-gray-300 hover:text-white px-4 py-2 rounded-lg text-sm font-medium transition-colors duration-200 hover:bg-white/10"
