@@ -2,9 +2,16 @@ import { useOwnerTokens } from '../blockchain/hooks/useOwnerTokens';
 import { blockchainConfig } from '../blockchain/config';
 import SkeletonIssuerCard from './SkeletonIssuerCard';
 import { Link } from 'react-router-dom';
+import { useState } from 'react';
+import UpdatePriceModal from './UpdatePriceModal';
+import { useUtils } from '../blockchain/hooks/useUtils';
 
 const TokenList = () => {
+  const { convertToHumanReadable } = useUtils();
   const { tokens, isLoading, error } = useOwnerTokens();
+  const [updatePriceModal, setUpdatePriceModal] = useState(false);
+  const [selectedTokenForUpdate, setSelectedTokenForUpdate] = useState(null);
+  
 
   if (isLoading) {
     return (
@@ -99,11 +106,11 @@ const TokenList = () => {
               </div>
               <div className="flex justify-between items-center">
                 <span className="text-sm font-medium text-gray-500">Max Supply</span>
-                <span className="text-sm font-semibold text-gray-900">{token.maxSupply.toString()}</span>
+                <span className="text-sm font-semibold text-gray-900">{convertToHumanReadable(token.maxSupply)}</span>
               </div>
               <div className="flex justify-between items-center">
                 <span className="text-sm font-medium text-gray-500">Sold</span>
-                <span className="text-sm font-semibold text-gray-900">{token.totalSupply.toString()}</span>
+                <span className="text-sm font-semibold text-gray-900">{convertToHumanReadable(token.totalSupply)}</span>
               </div>
               <div className="flex justify-between items-center">
                 <span className="text-sm font-medium text-gray-500">Price</span>
@@ -115,13 +122,35 @@ const TokenList = () => {
               </div>
             </div>
             <div className="mt-6 pt-4 border-t border-gray-200">
-              <button className="w-full bg-gray-900 text-white py-2 px-4 rounded-lg font-medium hover:bg-gray-800 focus:ring-2 focus:ring-gray-500 focus:ring-offset-2 transition duration-200">
-                View Details
-              </button>
+              <div className="flex space-x-3">
+                <button
+                  onClick={() => {
+                    setSelectedTokenForUpdate(token);
+                    setUpdatePriceModal(true);
+                  }}
+                  className="flex-1 bg-blue-600 text-white py-2 px-4 rounded-lg font-medium hover:bg-blue-700 focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 transition duration-200"
+                >
+                  Update Price
+                </button>
+                <button className="flex-1 bg-gray-900 text-white py-2 px-4 rounded-lg font-medium hover:bg-gray-800 focus:ring-2 focus:ring-gray-500 focus:ring-offset-2 transition duration-200">
+                  View Details
+                </button>
+              </div>
             </div>
           </div>
         ))}
       </div>
+
+      {/* Update Price Modal */}
+      {updatePriceModal && selectedTokenForUpdate && (
+        <UpdatePriceModal
+          token={selectedTokenForUpdate}
+          onClose={() => {
+            setUpdatePriceModal(false);
+            setSelectedTokenForUpdate(null);
+          }}
+        />
+      )}
     </div>
   );
 };
