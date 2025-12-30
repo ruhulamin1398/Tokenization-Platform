@@ -3,12 +3,36 @@ import { useAccount } from '../blockchain/hooks/useAccount';
 import { useUserHoldings } from '../blockchain/hooks/useUserHoldings';
 import { useUtils } from '../blockchain/hooks/useUtils';
 import { useTransferToken } from '../blockchain/hooks/useTransferToken';
+import { ConnectButton } from '@rainbow-me/rainbowkit';
 import SkeletonCard from '../components/SkeletonCard';
 
 const UserDashboard = () => {
   const { address, usdtBalance } = useAccount();
   const { userHoldings, totalValue, isLoading } = useUserHoldings();
   const { convertToHumanReadable } = useUtils();
+
+  // Check if user is connected
+  if (!address) {
+    return (
+      <div className="min-h-screen bg-gradient-to-br from-gray-900 via-gray-800 to-black flex items-center justify-center p-6">
+        <div className="bg-gray-900/50 backdrop-blur-sm rounded-2xl border border-gray-700/50 shadow-2xl p-8 text-center max-w-md w-full">
+          <div className="w-16 h-16 bg-gradient-to-r from-blue-500 to-purple-500 rounded-full flex items-center justify-center mx-auto mb-6">
+            <svg className="w-8 h-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" />
+            </svg>
+          </div>
+          <h2 className="text-3xl font-bold text-white mb-4">Connect Your Wallet</h2>
+          <p className="text-gray-400 mb-8 text-lg">
+            Connect your wallet to access your token portfolio and manage your assets.
+          </p>
+          <div className="flex justify-center">
+            <ConnectButton />
+          </div>
+           
+        </div>
+      </div>
+    );
+  }
 
   const handleTransferSuccess = useCallback(() => {
     // Close modal on successful transfer
