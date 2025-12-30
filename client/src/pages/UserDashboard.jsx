@@ -204,48 +204,6 @@ const UserDashboard = () => {
         )}
       </div>
 
-      {/* Recent Activity Section */}
-      <div className="mt-8 bg-gray-900/50 backdrop-blur-sm rounded-2xl shadow-lg border border-gray-700/50 p-6">
-        <h2 className="text-2xl font-bold text-white mb-4">Recent Activity</h2>
-        <div className="space-y-4">
-          <div className="flex items-center justify-between py-3 border-b border-gray-700/50">
-            <div className="flex items-center">
-              <div className="w-10 h-10 bg-green-900/50 rounded-full flex items-center justify-center mr-3">
-                <svg className="w-5 h-5 text-green-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 6v6m0 0v6m0-6h6m-6 0H6" />
-                </svg>
-              </div>
-              <div>
-                <p className="text-sm font-medium text-white">Token Purchase</p>
-                <p className="text-sm text-gray-400">Purchased 10.00 GLD tokens</p>
-              </div>
-            </div>
-            <div className="text-right">
-              <p className="text-sm font-medium text-white">$100.00</p>
-              <p className="text-sm text-gray-400">2 hours ago</p>
-            </div>
-          </div>
-
-          <div className="flex items-center justify-between py-3 border-b border-gray-700/50">
-            <div className="flex items-center">
-              <div className="w-10 h-10 bg-blue-900/50 rounded-full flex items-center justify-center mr-3">
-                <svg className="w-5 h-5 text-blue-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1" />
-                </svg>
-              </div>
-              <div>
-                <p className="text-sm font-medium text-white">USDT Deposit</p>
-                <p className="text-sm text-gray-400">Received 500.00 USDT</p>
-              </div>
-            </div>
-            <div className="text-right">
-              <p className="text-sm font-medium text-green-400">+$500.00</p>
-              <p className="text-sm text-gray-400">1 day ago</p>
-            </div>
-          </div>
-        </div>
-      </div>
-
       {/* Transfer Modal */}
       {transferModalOpen && selectedToken && (
         <div className="fixed inset-0 bg-black/50 backdrop-blur-sm z-50 flex items-center justify-center p-4">
