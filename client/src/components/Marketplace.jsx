@@ -111,7 +111,7 @@ const Marketplace = () => {
       <FeaturedTokensSection tokens={tokens} onTokenSelect={setSelectedToken} />
      
       <NewTokensSection tokens={tokens} onTokenSelect={setSelectedToken} />
-      <PopularTokensSection tokens={tokens} onTokenSelect={setSelectedToken} />
+      <PopularTokensSection onTokenSelect={setSelectedToken} />
 
       {selectedToken && (
         <PurchaseModal

@@ -1,49 +1,43 @@
 import { useState } from 'react';
-import { blockchainConfig } from '../../blockchain/config';
 import { Link } from 'react-router-dom';
 import { useUtils } from '../../blockchain/hooks/useUtils';
+import { usePaginatedTokens } from '../../blockchain/hooks/usePaginatedTokens';
 
-const PopularTokensSection = ({ tokens, onTokenSelect }) => {
-  const [currentPage, setCurrentPage] = useState(1);
-  const itemsPerPage = 6;
-  const popularTokens = (tokens?.slice().reverse() || []);
-  
-      const { convertToHumanReadable, convertToDecimalUnits } = useUtils();
-
-  // Calculate pagination
-  const totalPages = Math.ceil(popularTokens.length / itemsPerPage);
-  const startIndex = (currentPage - 1) * itemsPerPage;
-  const endIndex = startIndex + itemsPerPage;
-  const currentTokens = popularTokens.slice(startIndex, endIndex);
-
-  const handlePageChange = (page) => {
-    setCurrentPage(page);
-    // Scroll to top of section when page changes
-    window.scrollTo({ top: 0, behavior: 'smooth' });
-  };
-
-  const handlePrevPage = () => {
-    if (currentPage > 1) {
-      handlePageChange(currentPage - 1);
-    }
-  };
-
-  const handleNextPage = () => {
-    if (currentPage < totalPages) {
-      handlePageChange(currentPage + 1);
-    }
-  };
+const PopularTokensSection = ({ onTokenSelect }) => {
+  const { tokens: currentTokens, total, isLoading, error } = usePaginatedTokens(0, 4); // Show first 6 tokens only
+  const { convertToHumanReadable } = useUtils();
 
   return (
     <section>
       <div className="flex items-center justify-between mb-8">
         <h2 className="text-3xl font-bold text-white">Popular Tokens</h2>
-        <Link to="/" className="text-purple-400 hover:text-purple-300 font-medium transition-colors duration-200">
-          View All →
+        <Link
+          to="/browse-tokens"
+          className="bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-500 hover:to-pink-500 text-white px-6 py-2 rounded-lg font-semibold transition-all duration-200 transform hover:scale-105 hover:shadow-lg hover:shadow-purple-500/25"
+        >
+          Browse All →
         </Link>
       </div>
 
-      {popularTokens.length === 0 ? (
+      {isLoading ? (
+        <div className="text-center py-20">
+          <div className="w-24 h-24 bg-gradient-to-r from-purple-500/20 to-pink-500/20 rounded-full flex items-center justify-center mx-auto mb-6">
+            <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-purple-500"></div>
+          </div>
+          <h3 className="text-2xl font-semibold text-gray-300 mb-2">Loading tokens...</h3>
+          <p className="text-gray-500">Fetching the latest tokenized assets</p>
+        </div>
+      ) : error ? (
+        <div className="text-center py-20">
+          <div className="w-24 h-24 bg-gradient-to-r from-red-500/20 to-red-500/20 rounded-full flex items-center justify-center mx-auto mb-6">
+            <svg className="w-12 h-12 text-red-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-2.5L13.732 4c-.77-.833-1.964-.833-2.732 0L4.082 16.5c-.77.833.192 2.5 1.732 2.5z" />
+            </svg>
+          </div>
+          <h3 className="text-2xl font-semibold text-gray-300 mb-2">Error loading tokens</h3>
+          <p className="text-gray-500">Please try again later</p>
+        </div>
+      ) : currentTokens.length === 0 ? (
         <div className="text-center py-20">
           <div className="w-24 h-24 bg-gradient-to-r from-purple-500/20 to-pink-500/20 rounded-full flex items-center justify-center mx-auto mb-6">
             <svg className="w-12 h-12 text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -122,55 +116,6 @@ const PopularTokensSection = ({ tokens, onTokenSelect }) => {
             </div>
           ))}
         </div>
-
-        {/* Pagination */}
-        {totalPages > 1 && (
-          <div className="flex items-center justify-between mt-8">
-            <div className="flex items-center space-x-2">
-              <button
-                onClick={handlePrevPage}
-                disabled={currentPage === 1}
-                className="px-4 py-2 bg-gray-800 hover:bg-gray-700 disabled:bg-gray-900 disabled:cursor-not-allowed text-white rounded-lg transition-colors duration-200 flex items-center space-x-2"
-              >
-                <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
-                </svg>
-                <span>Previous</span>
-              </button>
-
-              <div className="flex items-center space-x-1">
-                {Array.from({ length: totalPages }, (_, i) => i + 1).map((page) => (
-                  <button
-                    key={page}
-                    onClick={() => handlePageChange(page)}
-                    className={`px-3 py-2 rounded-lg transition-colors duration-200 ${
-                      currentPage === page
-                        ? 'bg-purple-600 text-white'
-                        : 'bg-gray-800 hover:bg-gray-700 text-gray-300'
-                    }`}
-                  >
-                    {page}
-                  </button>
-                ))}
-              </div>
-
-              <button
-                onClick={handleNextPage}
-                disabled={currentPage === totalPages}
-                className="px-4 py-2 bg-gray-800 hover:bg-gray-700 disabled:bg-gray-900 disabled:cursor-not-allowed text-white rounded-lg transition-colors duration-200 flex items-center space-x-2"
-              >
-                <span>Next</span>
-                <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
-                </svg>
-              </button>
-            </div>
-
-            <div className="text-sm text-gray-400">
-              Page {currentPage} of {totalPages} ({popularTokens.length} total tokens)
-            </div>
-          </div>
-        )}
         </>
       )}
     </section>

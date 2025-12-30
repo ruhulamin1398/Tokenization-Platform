@@ -31,7 +31,14 @@ const UserLayout = () => {
                 className="text-gray-300 hover:text-white px-4 py-2 rounded-lg text-sm font-medium transition-colors duration-200 hover:bg-white/10"
               >
                 My Portfolio
-              </Link>   <Link
+              </Link>
+              <Link
+                to="/browse"
+                className="text-gray-300 hover:text-white px-4 py-2 rounded-lg text-sm font-medium transition-colors duration-200 hover:bg-white/10"
+              >
+                Browse Tokens
+              </Link>
+              <Link
                 to="/faucet"
                 className="text-gray-300 hover:text-white px-4 py-2 rounded-lg text-sm font-medium transition-colors duration-200 hover:bg-white/10"
               >
